@@ -13,7 +13,7 @@ const SELECT_BASE = `
 
 // GET /api/reportes  — listado con filtros opcionales
 async function listar(req, res) {
-  const { gravedad, estado, fecha_desde, fecha_hasta } = req.query;
+  const { gravedad, estado, fecha_desde, fecha_hasta, q } = req.query;
   const condiciones = [];
   const valores = [];
 
@@ -21,6 +21,16 @@ async function listar(req, res) {
   if (estado)   { valores.push(estado);   condiciones.push(`e.nombre = $${valores.length}`); }
   if (fecha_desde) { valores.push(fecha_desde); condiciones.push(`r.fecha_reporte >= $${valores.length}`); }
   if (fecha_hasta)  { valores.push(fecha_hasta); condiciones.push(`r.fecha_reporte <= $${valores.length}`); }
+  if (q && String(q).trim()) {
+    const termino = `%${String(q).trim().toLowerCase()}%`;
+    valores.push(termino);
+    condiciones.push(`(
+      LOWER(r.descripcion) ILIKE $${valores.length}
+      OR LOWER(CONCAT(u.nombre, ' ', u.apellido)) ILIKE $${valores.length}
+      OR LOWER(CAST(r.latitud AS TEXT)) LIKE $${valores.length}
+      OR LOWER(CAST(r.longitud AS TEXT)) LIKE $${valores.length}
+    )`);
+  }
 
   const where = condiciones.length ? `WHERE ${condiciones.join(" AND ")}` : "";
   const { rows } = await pool.query(`${SELECT_BASE} ${where} ORDER BY r.fecha_reporte DESC`, valores);
@@ -99,7 +109,7 @@ async function eliminar(req, res) {
 
 // GET /api/reportes/mapa  — formato GeoJSON, listo para Leaflet
 async function mapa(req, res) {
-  const { rows } = await pool.query(SELECT_BASE);
+  const { rows } = await pool.query(`${SELECT_BASE} WHERE e.nombre <> 'rechazado' ORDER BY r.fecha_reporte DESC`);
   const geojson = {
     type: "FeatureCollection",
     features: rows.map((r) => ({
@@ -130,12 +140,12 @@ async function porZona(req, res) {
     let rows;
     if (poligonoGeoJSON) {
       ({ rows } = await pool.query(
-        `${SELECT_BASE} WHERE ST_Contains(ST_SetSRID(ST_GeomFromGeoJSON($1), 4326), r.geom)`,
+        `${SELECT_BASE} WHERE e.nombre <> 'rechazado' AND ST_Contains(ST_SetSRID(ST_GeomFromGeoJSON($1), 4326), r.geom)`,
         [poligonoGeoJSON]
       ));
     } else if (lat && lng && radioMetros) {
       ({ rows } = await pool.query(
-        `${SELECT_BASE} WHERE ST_DWithin(r.geom::geography, ST_MakePoint($1,$2)::geography, $3)`,
+        `${SELECT_BASE} WHERE e.nombre <> 'rechazado' AND ST_DWithin(r.geom::geography, ST_MakePoint($1,$2)::geography, $3)`,
         [lng, lat, radioMetros]
       ));
     } else {

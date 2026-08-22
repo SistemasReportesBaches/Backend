@@ -1,7 +1,7 @@
 -- ============================================================
 -- Sistema Web de Reporte, Geolocalización y Gestión de Baches
 -- Santa Cruz, Bolivia — Esquema de Base de Datos
--- PostgreSQL + PostGIS p
+-- PostgreSQL + PostGIS
 -- ============================================================
 
 CREATE EXTENSION IF NOT EXISTS postgis;
