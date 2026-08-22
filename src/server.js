@@ -11,7 +11,7 @@ const usuariosRoutes = require("./routes/usuariosRoutes");
 
 const app = express();
 
-// ---------- Seguridad y utilidades base ----------
+// ---------- Seguridad y utilidades base ----------aaaaa
 // Nota: se desactiva el Content-Security-Policy por defecto de helmet porque
 // el frontend de este proyecto carga Leaflet y Google Fonts desde CDN y usa
 // manejadores onclick inline; para producción se recomienda configurar un
