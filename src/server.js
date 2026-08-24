@@ -8,6 +8,7 @@ const authRoutes = require("./routes/authRoutes");
 const reportesRoutes = require("./routes/reportesRoutes");
 const grafoRoutes = require("./routes/grafoRoutes");
 const usuariosRoutes = require("./routes/usuariosRoutes");
+const iaRoutes = require("./routes/iaRoutes");
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use("/api", authRoutes);
 app.use("/api/reportes", reportesRoutes);
 app.use("/api/grafo", grafoRoutes);
 app.use("/api/usuarios", usuariosRoutes);
+app.use("/api/ia", iaRoutes);
 
 app.get("/api/health", (req, res) => res.json({ status: "ok" }));
 
