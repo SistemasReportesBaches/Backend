@@ -28,7 +28,7 @@ app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
 // Frontend (mismo origen que la API: evita CORS y permite levantar todo con un solo comando)
 const FRONTEND_DIR = path.join(__dirname, "..", "..","FrontendWeb", "frontend");
 app.use(express.static(FRONTEND_DIR));
-app.get("/", (req, res) => res.redirect("/inicio.html"));
+app.get("/", (req, res) => res.redirect("/index.html"));
 
 // ---------- Rutas de la API ----------
 app.use("/api", authRoutes);
