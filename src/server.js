@@ -9,6 +9,9 @@ const reportesRoutes = require("./routes/reportesRoutes");
 const grafoRoutes = require("./routes/grafoRoutes");
 const usuariosRoutes = require("./routes/usuariosRoutes");
 const iaRoutes = require("./routes/iaRoutes");
+// Nuevas rutas: notificaciones y quejas
+const notificacionesRoutes = require("./routes/notificacionesRoutes");
+const quejasRoutes = require("./routes/quejasRoutes");
 
 const app = express();
 
@@ -36,6 +39,9 @@ app.use("/api/reportes", reportesRoutes);
 app.use("/api/grafo", grafoRoutes);
 app.use("/api/usuarios", usuariosRoutes);
 app.use("/api/ia", iaRoutes);
+// Rutas añadidas
+app.use("/api/notificaciones", notificacionesRoutes);
+app.use("/api/quejas", quejasRoutes);
 
 app.get("/api/health", (req, res) => res.json({ status: "ok" }));
 

@@ -18,6 +18,12 @@ const crearReporteSchema = z.object({
     }),
   precision_gps: z.coerce.number().nonnegative().optional(),
   gravedad: z.enum(["leve", "moderado", "grave", "critico"]),
+  // El usuario puede marcar una casilla para recibir notificaciones sobre cambios de estado
+  notify_usuario: z.preprocess((v) => {
+    if (v === 'true' || v === '1' || v === true) return true;
+    if (v === 'false' || v === '0' || v === false) return false;
+    return undefined;
+  }, z.boolean()).optional(),
 });
 
 const actualizarReporteSchema = z.object({
