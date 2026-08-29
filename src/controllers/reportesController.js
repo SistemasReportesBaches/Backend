@@ -4,12 +4,15 @@ const SELECT_BASE = `
   SELECT r.id, r.descripcion, r.fotografia_url, r.latitud, r.longitud, r.precision_gps,
          g.nombre AS gravedad, g.color_hex, e.nombre AS estado,
          r.fecha_reporte, r.fecha_actualizacion,
+
          r.notify_usuario,
-         u.id AS usuario_id, u.nombre AS usuario_nombre, u.apellido AS usuario_apellido
+         u.id AS usuario_id, u.nombre AS usuario_nombre, u.apellido AS usuario_apellido,
+         u.email AS usuario_email, u.estado AS usuario_estado, ro.nombre AS usuario_rol
   FROM reportes r
   JOIN gravedades g ON g.id = r.gravedad_id
   JOIN estados e    ON e.id = r.estado_id
   JOIN usuarios u   ON u.id = r.usuario_id
+  JOIN roles ro     ON ro.id = u.rol_id
 `;
 
 // GET /api/reportes  — listado con filtros opcionales
@@ -150,7 +153,15 @@ async function mapa(req, res) {
         fotografia_url: r.fotografia_url,
         latitud: r.latitud,
         longitud: r.longitud,
+        precision_gps: r.precision_gps,
         fecha_reporte: r.fecha_reporte,
+        fecha_actualizacion: r.fecha_actualizacion,
+        usuario_id: r.usuario_id,
+        usuario_nombre: r.usuario_nombre,
+        usuario_apellido: r.usuario_apellido,
+        usuario_email: r.usuario_email,
+        usuario_rol: r.usuario_rol,
+        usuario_estado: r.usuario_estado,
         usuario: `${r.usuario_nombre} ${r.usuario_apellido}`,
         notify_usuario: r.notify_usuario === true,
       },
